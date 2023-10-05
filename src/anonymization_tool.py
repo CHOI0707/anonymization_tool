@@ -174,8 +174,11 @@ def main(args):
             exit()
         
         if index == 0:
+            # if the size of the dataset is too small, anonymize entire image
+            fd = 'y' == input("Do you need face detection? [y/n] -> ")
+
             # decide anonymization method
-            print("Choose anonymization method:\n",
+            print("\nChoose anonymization method:\n",
                               "1. Masking\n",
                               "2. Blurring\n",
                               "3. Pixelating\n",
@@ -217,7 +220,11 @@ def main(args):
                 exit()
         
         # face detection
-        faces = detector.detect_objects(img, threshold=threshold)
+        if fd:
+            faces = detector.detect_objects(img, threshold=threshold)
+        else:
+            h, w, c = img.shape
+            faces = [{'id':1, 'score':1, 'x1':0, 'y1':0, 'x2':w, 'y2':h}]
 
         # apply annonymization method
         if anony == 1:
